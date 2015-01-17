@@ -37,7 +37,7 @@ int SINCOS_LENGTH = int(360.0 / SINCOS_PRECISION);
 int timer = 0;
 int sec;
 
-float sx = 40;
+float sx = width*0.05;
 
 boolean bool = true;
 
@@ -62,13 +62,14 @@ String text = "";
 void setup() {
   //size(1024, 700, P3D);  
   size(displayWidth, displayHeight, OPENGL);
+  sx = width*0.05;
   //PFont font = loadFont("Meiryo-48.vlw");
   PFont font = createFont("メイリオ", 48, true);
   textFont(font);
   leap = new LeapMotionP5(this);
   colorMode(RGB, 256, 256, 256, 100);
   back = loadImage("space_3.jpg");
-  texmap = loadImage("world32k.jpg");    
+  texmap = loadImage("2_no_clouds_8k.jpg");
   reader = new XlsReader(this, "AirportDep(Converted).xls");
   initializeSphere(sDetail);
   cp5 = new ControlP5(this);
@@ -1031,7 +1032,7 @@ float[] changeCoordinate(float phiA, float phiM, float phiS, String NS, float ra
   }
 
   for (int i = 0; i < 3; i++) {
-    //xyz[i] = xyz[i] * 1.0085;
+    xyz[i] = xyz[i] * 1.0085;
   }
 
   return xyz;
@@ -1218,7 +1219,8 @@ void clock() {
 }
 
 void timeSpeed() {
-  float time = map(sx, 40, 290, 1, 3600);
+  //float time = map(sx, 40, 290, 1, 3600);
+  float time = map(sx, width*0.05, (width*0.05)+250, 1, 3600);
   timer += (int)time;
   sec = timer / 60;
   if (sec > 0) {
@@ -1227,7 +1229,7 @@ void timeSpeed() {
   //System.out.println(timer + ", " + sec);
   textSize(20);
   fill(52, 153, 211);
-  text((int)time + "speed", 360, 674);
+  text((int)time + "speed", (width*0.05)+320, (height*0.9)+14);
 }
 
 void slideBar() {
@@ -1235,13 +1237,16 @@ void slideBar() {
   stroke(192, 192, 192);
   strokeWeight(3);
   rectMode(CORNER);
-  rect(40, 660, 250, 16);
+  //rect(40, 660, 250, 16);
+  rect(width*0.05, height*0.9, 250, 16);
   noStroke();
   fill(255, 255, 255);
   rectMode(CENTER);
-  rect(sx, 668, 16, 32);
+  //rect(sx, 668, 16, 32);
+  rect(sx, (height*0.9)+8, 16, 32);
   rectMode(CORNER);
-  rect(40, 660, sx - 40, 16);
+  //rect(40, 660, sx - 40, 16);
+  rect(width*0.05, height*0.9, sx-(width*0.05), 16);
 }
 
 void countFlight() {
@@ -1256,7 +1261,7 @@ void countFlight() {
 }
 
 void textField(){
-  textSize(5);
+  textSize(15);
   text(text, width*0.8, 120);
 }
 
@@ -1293,10 +1298,10 @@ void leapFinger() {
     for (Finger finger : leap.getFingerList (lastFrame)) {
       PVector lastFingerPos = leap.getTip(finger);
       float x = lastFingerPos.x;
-      if (sx >= 40 && sx <= 290) {
-        if (sx != 290 && leap.getTip(currentFinger).x - x > 0) {
+      if (sx >= width*0.05 && sx <= (width*0.05)+250) {
+        if (sx != (width*0.05)+250 && leap.getTip(currentFinger).x - x > 0) {
           sx+=10;
-        } else if (sx != 40 && leap.getTip(currentFinger).x - x < 0) {
+        } else if (sx != width*0.05 && leap.getTip(currentFinger).x - x < 0) {
           sx-=10;
         }
       }
@@ -1366,7 +1371,7 @@ void leapHand() {
 void mousePressed() {
   float x = mouseX;
   float y = mouseY;
-  if (x > 32 && x < 298 && y > 652 && y < 684) {
+  if (x > (width*0.05)-8 && x < (width*0.05)+258 && y > (height*0.9)-8 && y < (height*0.9)+24) {
     bool = false;
   }
 }
@@ -1375,12 +1380,12 @@ void mouseDragged() {
   float x = mouseX;
   float y = mouseY;
   if (bool == false) {
-    if (x >= 40 && x <= 290) {
+    if (x >= width*0.05 && x <= (width*0.05)+250) {
       sx = x;
-    } else if (x < 40) {
-      sx = 40;
-    } else if (x > 290) {
-      sx = 290;
+    } else if (x < width*0.05) {
+      sx = width*0.05;
+    } else if (x > (width*0.05)+250) {
+      sx = (width*0.05)+250;
     }
   }
 }
