@@ -1,3 +1,7 @@
+/*
+Please READEME.txt
+*/
+
 import processing.opengl.*;
 
 import de.bezier.data.*;
