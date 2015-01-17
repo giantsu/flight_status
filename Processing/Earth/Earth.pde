@@ -60,11 +60,9 @@ String flightNumber = "";
 String text = "";
 
 void setup() {
-  //size(1024, 700, P3D);  
   size(displayWidth, displayHeight, OPENGL);
-  sx = width*0.05;
-  //PFont font = loadFont("Meiryo-48.vlw");
-  PFont font = createFont("メイリオ", 48, true);
+  sx = width*0.05; // スライドバー初期値設定
+  PFont font = createFont("メイリオ", 48, true); // 日本語表示
   textFont(font);
   leap = new LeapMotionP5(this);
   colorMode(RGB, 256, 256, 256, 100);
@@ -72,6 +70,8 @@ void setup() {
   texmap = loadImage("2_no_clouds_8k.jpg");
   reader = new XlsReader(this, "AirportDep(Converted).xls");
   initializeSphere(sDetail);
+  
+  // テキストフィールド設定
   cp5 = new ControlP5(this);
   cp5.addTextfield("flightNumber")
      .setPosition(width * 0.8,50)
@@ -645,6 +645,7 @@ void drawAirRoute() {
     if ((hour * 60 + minute > dpH * 60 + dpM && hour * 60 + minute < (dpH + ntH) * 60 + (dpM + ntM)) || (hour2 * 60 + minute > dpH * 60 + dpM && hour2 * 60 + minute < (dpH + ntH) * 60 + (dpM + ntM))) {
       crFF++;
       crF = crFF;
+      // t: 飛行機の進行度
       float t = 1 - ((((dpH + ntH) * 60 + (dpM + ntM)) - (hour * 60 + minute)) / (ntH * 60 + ntM));
       if ((hour2 * 60 + minute > dpH * 60 + dpM && hour2 * 60 + minute < (dpH + ntH) * 60 + (dpM + ntM))) {
         t = 1 - ((((dpH + ntH) * 60 + (dpM + ntM)) - (hour2 * 60 + minute)) / (ntH * 60 + ntM));
@@ -1016,6 +1017,7 @@ void drawAirRoute() {
   }
 }
 
+// 緯度経度をxyz座標に変換
 float[] changeCoordinate(float phiA, float phiM, float phiS, String NS, float ramdaA, float ramdaM, float ramdaS, String EW) {
   float r = globeRadius / 2;
   float[] decimal = new float[2];
@@ -1038,6 +1040,7 @@ float[] changeCoordinate(float phiA, float phiM, float phiS, String NS, float ra
   return xyz;
 }
 
+// 60進法を10進法に変換
 float[] changeSexagesimal(float phiA, float phiM, float phiS, String NS, float ramdaA, float ramdaM, float ramdaS, String EW) {
   float[] decimal = new float[2];
 
@@ -1058,6 +1061,8 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   cx = (lx1 + lx2) / 2;
   cy = (ly1 + ly2) / 2;
   cz = (lz1 + lz2) / 2;
+  
+  // 直線距離の長さによって航路軌跡を変更
   if (sqrt((cx * cx) + (cy * cy) + (cz * cz)) < globeRadius / 4) {
     while (sqrt ( (cx * cx) + (cy * cy) + (cz * cz)) < globeRadius / 2) {
       cx *= 1.01;
@@ -1107,10 +1112,10 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   //line(0.0, 0.0, 0.0, cx1, cy1, cz1);
   //line(0.0, 0.0, 0.0, cx2, cy2, cz2);
   
-//  stroke(255, 0, 0);
-//  line(0, 0, 0, 300, 0, 0);
-//  line(0, 0, 0, 0, 300, 0);
-//  line(0, 0, 0, 0, 0, 300);
+  //  stroke(255, 0, 0);
+  //  line(0, 0, 0, 300, 0, 0);
+  //  line(0, 0, 0, 0, 300, 0);
+  //  line(0, 0, 0, 0, 0, 300);
 
   //  if (YN == "Y") { // over day yes or no
   //    ar = ar + 24 * 60;
@@ -1119,6 +1124,7 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   //  nt = nt * 60; // minute to second
   //  // System.out.println("nt = " + nt);
   
+  // 飛行中の飛行機の目的地、便名
   text += name + ", " + number + "\n";
 
   strokeWeight(3);
@@ -1127,7 +1133,9 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   } else {
     stroke(15, 60, 241, 30);
   }
+  // 航路軌跡
   bezier(lx1, ly1, lz1, cx1, cy1, cz1, cx2, cy2, cz2, lx2, ly2, lz2);
+  // 現在位置
   float x = bezierPoint(lx1, cx1, cx2, lx2, t);
   float y = bezierPoint(ly1, cy1, cy2, ly2, t);
   float z = bezierPoint(lz1, cz1, cz2, lz2, t);
@@ -1135,7 +1143,7 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   pushMatrix();
   translate(x, y, z);
   
-  /* ===== billboard ===== */
+  // ビルボード変換
   pushMatrix();
   PMatrix3D builboardMat = (PMatrix3D)g.getMatrix();
   builboardMat.m00 = builboardMat.m11 = builboardMat.m22 = 1;
@@ -1147,6 +1155,7 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   textAlign(CENTER);
   textSize(10);
   /*
+  // 飛行機をマウスタッチで目的地、便名表示(未完成)
   float mouseXMat = mouseX;
   float mouseYMat = mouseY;
   float worldX = modelX(x, y, z);
@@ -1169,8 +1178,9 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   text += "Z: " + Z + "\n";
   System.out.println("mouseXMat: " + mouseXMat + ", mouseYMat: " + mouseYMat + "\nX: " + X + ", Y : " + Y + ", Z: " + Z);
   if (mouseXMat < X+10 && mouseXMat > X-10 && mouseYMat < Y+10 && mouseYMat > Y-10) {
-    text("Airport", 0, -5, 0);
-    println("Airport");
+    text(name, 0, -5, 0);
+    text(number, 0, 12, 0);
+    println("true");
   }
   */
   if (number.equals(flightNumber)){
@@ -1184,13 +1194,13 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
     stroke(241, 196, 15, 50);
   }
   popMatrix();
-  /* ===== End ===== */
   
   sphere(3);
   
   popMatrix();
 }
 
+// 時間表示
 void clock() {
   second += sec;
   if (second >= 60) {
@@ -1218,6 +1228,7 @@ void clock() {
   text(t, displayWidth * 0.8, displayHeight * 0.9);
 }
 
+// スピード設定
 void timeSpeed() {
   //float time = map(sx, 40, 290, 1, 3600);
   float time = map(sx, width*0.05, (width*0.05)+250, 1, 3600);
@@ -1232,6 +1243,7 @@ void timeSpeed() {
   text((int)time + "speed", (width*0.05)+320, (height*0.9)+14);
 }
 
+// スライドバーによるスピード操作
 void slideBar() {
   noFill();
   stroke(192, 192, 192);
@@ -1249,6 +1261,7 @@ void slideBar() {
   rect(width*0.05, height*0.9, sx-(width*0.05), 16);
 }
 
+// 合計飛行数、現在飛行数を表示
 void countFlight() {
   textSize(25);
   fill(255);
@@ -1260,6 +1273,7 @@ void countFlight() {
   text(crF, 200, 95);
 }
 
+// テキストフィールドの下にテキスト表示
 void textField(){
   textSize(15);
   text(text, width*0.8, 120);
@@ -1282,6 +1296,7 @@ void leapFinger() {
     popMatrix();
   }
 
+  // 指１本で地球の回転操作
   if (leap.getFingerList ().size() == 1) {
     Finger currentFinger = leap.getFinger(0);
     Frame lastFrame = leap.getLastFrame();
@@ -1292,7 +1307,9 @@ void leapFinger() {
       velocityX += (leap.getTip(currentFinger).y - y) * 0.1;
       velocityY -= (leap.getTip(currentFinger).x - x) * 0.1;
     }
-  } else if (leap.getFingerList().size() == 2) {
+  } 
+  // 指２本でスライドバー操作
+  else if (leap.getFingerList().size() == 2) {
     Finger currentFinger = leap.getFinger(0);
     Frame lastFrame = leap.getLastFrame();
     for (Finger finger : leap.getFingerList (lastFrame)) {
@@ -1307,7 +1324,9 @@ void leapFinger() {
       }
       break;
     }
-  } else if (leap.getFingerList().size() == 5) {
+  } 
+  // 指５本で地球の回転を止める
+  else if (leap.getFingerList().size() == 5) {
     velocityX *= 0.7;
     velocityY *= 0.7;
   }
@@ -1327,6 +1346,7 @@ void leapHand() {
 
   Hand rightHand;
   Hand leftHand;
+  // 手を広げた状態での左右の手の判定・設定
   if (leap.getHandList().size() == 2 && leap.getFingerList().size() == 10) {
     rightHand = leap.getHand(0);
     leftHand = leap.getHand(1);
@@ -1348,15 +1368,19 @@ void leapHand() {
       }
     }
 
+    // 両手の角度が水平に対して30°超過100°未満の場合
     if (leap.getRoll(rightHand) < -30 && leap.getRoll(rightHand) > -100 && leap.getRoll(leftHand) > 30 && leap.getRoll(leftHand) < 100) {
+      // 両手を外に広げた場合、地球をズームイン
       if (leap.getPosition(rightHand).x - leap.getPosition(lastRightHand).x > 0 && leap.getPosition(leftHand).x - leap.getPosition(lastLeftHand).x < 0) {
         pushBack += 10;
       }
+      // // 両手を外に広げた場合、地球をズームアウト
       if (leap.getPosition(rightHand).x - leap.getPosition(lastRightHand).x < 0 && leap.getPosition(leftHand).x - leap.getPosition(lastLeftHand).x > 0) {
         pushBack -= 10;
       }
     }
-  } else if (leap.getHandList().size() == 1 && leap.getFingerList().size() == 5) {
+  }
+  /*else if (leap.getHandList().size() == 1 && leap.getFingerList().size() == 5) {
     Frame lastFrame = leap.getLastFrame();
     Hand hand = leap.getHand(0);
 
@@ -1365,9 +1389,10 @@ void leapHand() {
 
     //    velocityX += rotationXAxis * 50;
     //    velocityY -= rotationYAxis * 50;
-  }
+  }*/
 }
 
+// スライドバーの有効判定
 void mousePressed() {
   float x = mouseX;
   float y = mouseY;
@@ -1376,6 +1401,7 @@ void mousePressed() {
   }
 }
 
+// スライドバーの有効範囲設定
 void mouseDragged() {
   float x = mouseX;
   float y = mouseY;
@@ -1402,6 +1428,7 @@ void keyPressed() {
   }
 }
 
+// テキストフィールドの入力処理
 void controlEvent(ControlEvent theEvent) {
   if(theEvent.isAssignableFrom(Textfield.class)) {
     flightNumber = theEvent.getStringValue();
