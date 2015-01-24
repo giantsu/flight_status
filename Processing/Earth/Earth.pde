@@ -1158,8 +1158,7 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   applyMatrix(builboardMat);
   textAlign(CENTER);
   textSize(10);
-  /*
-  // 飛行機をマウスタッチで目的地、便名表示(未完成)
+  /* // 飛行機をマウスタッチで目的地、便名表示(未完成)
   float mouseXMat = mouseX;
   float mouseYMat = mouseY;
   float worldX = modelX(x, y, z);
@@ -1378,7 +1377,7 @@ void leapHand() {
       if (leap.getPosition(rightHand).x - leap.getPosition(lastRightHand).x > 0 && leap.getPosition(leftHand).x - leap.getPosition(lastLeftHand).x < 0) {
         pushBack += 10;
       }
-      // // 両手を外に広げた場合、地球をズームアウト
+      // // 両手を内側に近づけた場合、地球をズームアウト
       if (leap.getPosition(rightHand).x - leap.getPosition(lastRightHand).x < 0 && leap.getPosition(leftHand).x - leap.getPosition(lastLeftHand).x > 0) {
         pushBack -= 10;
       }
