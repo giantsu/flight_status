@@ -1,5 +1,7 @@
 /*
 Please READEME.txt
+
+Push Ctrl+Shift+R, Run FullScreen
 */
 
 import processing.opengl.*;
@@ -96,10 +98,7 @@ void draw() {
   timeSpeed();
   countFlight();
   leapMotion();
-  textField();
-//  stroke(255, 0, 0);
-//  line(0, 0, 0, width, height, 0);
-//  camera(width, height/2, width/2, width/2, height/2, 0, 0, 1, 0);
+  // textField();
 }
 
 void renderGlobe() {
@@ -1111,22 +1110,6 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
       cz2 *= 1.01;
     }
   }
-  //stroke(22, 233, 159, 40);
-  //line(0.0, 0.0, 0.0, cx, cy, cz);
-  //line(0.0, 0.0, 0.0, cx1, cy1, cz1);
-  //line(0.0, 0.0, 0.0, cx2, cy2, cz2);
-  
-  //  stroke(255, 0, 0);
-  //  line(0, 0, 0, 300, 0, 0);
-  //  line(0, 0, 0, 0, 300, 0);
-  //  line(0, 0, 0, 0, 0, 300);
-
-  //  if (YN == "Y") { // over day yes or no
-  //    ar = ar + 24 * 60;
-  //  }
-  //  float nt = (float)(ar - (dp - td)); //neccesaryTime = arriveTime - (departureTime - timeDifference)
-  //  nt = nt * 60; // minute to second
-  //  // System.out.println("nt = " + nt);
   
   // 飛行中の飛行機の目的地、便名
   text += name + ", " + number + "\n";
@@ -1158,6 +1141,7 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
   applyMatrix(builboardMat);
   textAlign(CENTER);
   textSize(10);
+  
   /* // 飛行機をマウスタッチで目的地、便名表示(未完成)
   float mouseXMat = mouseX;
   float mouseYMat = mouseY;
@@ -1184,8 +1168,8 @@ void airRoute(float lx1, float ly1, float lz1, float lx2, float ly2, float lz2, 
     text(name, 0, -5, 0);
     text(number, 0, 12, 0);
     println("true");
-  }
-  */
+  } */
+  
   if (number.equals(flightNumber)){
     fill(255, 0, 0, 100);
     stroke(255, 0, 0, 100);
